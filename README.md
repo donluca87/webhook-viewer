@@ -24,7 +24,14 @@ To get started with the Webhook Logger, follow these steps:
    ```bash
    cd webhook-logger && npm install
 
-2. Start the server:
+3. Start the server:
 
    ```bash
    npm start
+
+4. Send POST request like:
+
+   ```bash
+   curl -X POST http://localhost:3000/webhook -H 'Content-Type: application/json' -d '{"login":"test_user","password":"test_password"}'
+
+
