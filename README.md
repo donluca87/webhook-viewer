@@ -18,3 +18,13 @@ To get started with the Webhook Logger, follow these steps:
 
    ```bash
    git clone https://github.com/yourusername/webhook-logger.git
+   
+2. Open the project folder and install dependencies:
+
+   ```bash
+   cd webhook-logger && npm install
+
+2. Start the server:
+
+   ```bash
+   npm start
