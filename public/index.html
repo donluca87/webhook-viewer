@@ -20,7 +20,7 @@
             </div>
             <ul class="logs-list">
                 <li v-for="hook in filteredHooks" :key="hook.id" class="log-item">
-                    ID: {{ hook.id }} - Received at: {{ hook.timestamp }} <br />
+                    ID: {{ hook.id }} - Received at: {{ getFormattedTimestamp(hook.id) }} <br />
                     <code>Login value: {{ hook.login }} - Password value: {{ hook.password }}</code>
                     <pre class="hook-item">{{ JSON.stringify(hook, null, 2) }}</pre>
                 </li>
