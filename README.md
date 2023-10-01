@@ -1,0 +1,20 @@
+# Webhook Logger
+
+Webhook Logger is a web application that listens for incoming webhook events and displays them in real-time. It allows you to monitor and log webhook events, making it easier to track and analyze incoming data.
+
+## Features
+
+- Real-time display of incoming webhook events.
+- Search functionality to filter and find specific events.
+- Clear button to reset the search and view all events.
+- Persistent storage using local storage to keep logs between sessions.
+- Modern and responsive user interface.
+
+## Getting Started
+
+To get started with the Webhook Logger, follow these steps:
+
+1. Clone this repository:
+
+   ```bash
+   git clone https://github.com/yourusername/webhook-logger.git
