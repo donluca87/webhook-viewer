@@ -1,6 +1,40 @@
 // public/main.js
 const socket = io();
 
+// Register the collapsible-item component globally
+Vue.component('collapsible-item', {
+  props: {
+    hook: Object,
+  },
+  data() {
+    return {
+      isVisible: false,
+    };
+  },
+  methods: {
+    toggleCollapsible() {
+      this.isVisible = !this.isVisible;
+      this.$refs.content.style.display = this.isVisible ? 'block' : 'none';
+    },
+  },
+  template: `
+    <div>
+      <button @click="toggleCollapsible" class="collapsible">
+        {{ isVisible ? 'Hide event JSON' : 'Show event JSON' }}
+      </button>
+      <div class="content" ref="content" style="display: none;">
+        <pre class="hook-item">{{ JSON.stringify(hook, null, 2) }}</pre>
+      </div>
+    </div>
+  `,
+});
+
+
+
+
+
+
+
 new Vue({
   el: '#app',
   data: {
@@ -9,6 +43,7 @@ new Vue({
     filteredHooks: [], // Store filtered hooks here,
     lastHookId: null,
     filteredHookIndices: [], // Store filtered hook indices here
+    hooks: [], // Ensure that the hooks data is defined in your Vue instance's data
   },
   methods: {
     filterHooks() {
@@ -67,6 +102,10 @@ new Vue({
       }
       return ''; // Handle the case when timestamp is not found
     },
+    toggleCollapsible() {
+      this.isActive = !this.isActive;
+      console.log('isActive:', this.isActive); // Debugging line
+    }
   },
   beforeMount() {
     // Initialize the logs array by retrieving data from localStorage
