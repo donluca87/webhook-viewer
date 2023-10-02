@@ -1,6 +1,27 @@
 // public/main.js
 const socket = io();
 
+// Function to save an event to localStorage with data size management
+function saveEventToLocalStorage(event) {
+  const events = JSON.parse(localStorage.getItem('events')) || [];
+  events.push(event);
+
+  // Check if the data size exceeds a limit (e.g., 1 MB)
+  if (calculateDataSize(events) > 1000000) {
+    // Implement a cleanup strategy (e.g., remove the oldest events)
+    const numberOfEventsToRemove = Math.ceil(events.length / 2);
+    events.splice(0, numberOfEventsToRemove);
+  }
+
+  localStorage.setItem('events', JSON.stringify(events));
+}
+
+// Function to calculate the size of data in bytes
+function calculateDataSize(data) {
+  // Calculate the size of data in bytes (this is a simplified example)
+  return new TextEncoder().encode(JSON.stringify(data)).length;
+}
+
 // Register the collapsible-item component globally
 Vue.component('collapsible-item', {
   props: {
