@@ -18,9 +18,12 @@
                 <button @click="clearSearch" class="button">Clear Search</button>
                 <button @click="clearLocalStorage" class="button">Clear Local Storage</button>
             </div>
-            <!-- Add these buttons where you want pagination controls -->
+            <!-- Add these elements in your template for the page indicator and input -->
             <div class="pagination">
                 <button @click="prevPage" :disabled="currentPage === 1">Previous Page</button>
+                <span>Page {{ currentPageIndicator }} of {{ totalPages }}</span>
+                <input type="number" v-model.number="currentPageIndicator" @input="setCurrentPage(currentPageIndicator)"
+                    :min="1" :max="totalPages" />
                 <button @click="nextPage" :disabled="!hasNextPage">Next Page</button>
             </div>
             <ul class="logs-list">
@@ -37,4 +40,5 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/main.js"></script>
 </body>
+
 </html>

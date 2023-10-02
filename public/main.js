@@ -38,12 +38,11 @@ new Vue({
     filteredHookIndices: [], // Store filtered hook indices here
     eventsPerPage: 10, // Number of events to show per page
     currentPage: 1,   // Current page number
+    currentPageIndicator: 1, // Add a new property for the page indicator
+    eventsPerPage: 10,
   },
   methods: {
     filterHooks() {
-      // Calculate the number of pages before the filter
-      const totalPagesBeforeFilter = Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
-
       // Filter hooks based on searchTerm and store the filtered indices
       this.filteredHookIndices = this.hooks
         .map((hook, index) => ({ hook, index }))
@@ -69,7 +68,6 @@ new Vue({
         this.currentPage = 1;
       }
     },
-
     clearSearch() {
       this.searchTerm = ''; // Clear the search term
       // Reset the filteredHookIndices to include all indices
@@ -95,7 +93,6 @@ new Vue({
         second: "numeric",
         hour12: false
       };
-
       return new Intl.DateTimeFormat('it-IT', options).format(new Date(timestamp));
     },
     getGeneratedHookId(hook) {
@@ -122,18 +119,30 @@ new Vue({
         this.currentPage--;
       }
     },
+    // Method to set the current page and page indicator
+    setCurrentPage(pageNumber) {
+      if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+        this.currentPage = pageNumber;
+      }
+    },
+  },
+  watch: {
+    currentPage(newPage) {
+      // Update the currentPageIndicator when currentPage changes
+      this.currentPageIndicator = newPage;
+    },
   },
   computed: {
+    totalPages() {
+      return Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
+    },
+    hasNextPage() {
+      return this.currentPage < this.totalPages;
+    },
     paginatedHooks() {
       const startIndex = (this.currentPage - 1) * this.eventsPerPage;
       const endIndex = startIndex + this.eventsPerPage;
       return this.filteredHookIndices.slice(startIndex, endIndex);
-    },
-    // Computed property to check if there's a next page
-    hasNextPage() {
-      return (
-        this.currentPage < Math.ceil(this.filteredHookIndices.length / this.eventsPerPage)
-      );
     },
   },
   beforeMount() {
@@ -185,9 +194,7 @@ new Vue({
       localStorage.setItem('lastHookId', generatedHookId); // Store the generatedHookId in local storage
       localStorage.setItem('timestamps', JSON.stringify(this.timestamps));
     });
-
     // Retrieve the last assigned ID from localStorage or start at 0
     this.lastHookId = parseInt(localStorage.getItem('lastHookId')) || 0;
   }
-
 });
