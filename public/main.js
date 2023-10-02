@@ -6,7 +6,8 @@ new Vue({
   data: {
     hooks: [], // Store received hooks here
     searchTerm: '',
-    filteredHooks: [], // Store filtered hooks here
+    filteredHooks: [], // Store filtered hooks here,
+    lastHookId: null
   },
   methods: {
     filterHooks() {
@@ -17,9 +18,7 @@ new Vue({
         // Check if searchTerm is present as a substring in any property of the webhook data
         for (const key in hook) {
           const value = hook[key];
-          if (value && typeof value === 'string' && value.toLowerCase().includes(searchTerm)) {
-            return true;
-          }
+          return value && typeof value === 'string' && value.toLowerCase().includes(searchTerm);
         }
         return false;
       });
@@ -32,14 +31,40 @@ new Vue({
     clearLocalStorage() {
       localStorage.removeItem('logs'); // Remove logs
       localStorage.removeItem('lastHookId'); // Remove lastHookId
+      localStorage.removeItem('timestamps'); // Remove timestamps
       this.hooks = []; // Clear the logs array in your component
       this.lastHookId = 0; // Reset the lastHookId
       this.filterHooks();
+    },
+    formatTimestamp(timestamp) {
+      // Format the timestamp as needed
+      let options = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false
+      };
+
+      return new Intl.DateTimeFormat('it-IT', options).format(new Date(timestamp));
+    },
+    getGeneratedHookId(hook) {
+      return this.hooks.indexOf(hook);
+    },
+    getFormattedTimestamp(index) {
+      const timestampObj = this.timestamps.find((timestamp) => timestamp.id === index);
+      if (timestampObj) {
+        return timestampObj.timestamp;
+      }
+      return ''; // Handle the case when timestamp is not found
     },
   },
   beforeMount() {
     // Initialize the logs array by retrieving data from localStorage
     const storedLogs = localStorage.getItem('logs');
+    const storedTimestamps = localStorage.getItem('timestamps');
 
     if (storedLogs) {
       // Parse and set the logs if there are stored logs in localStorage
@@ -47,55 +72,47 @@ new Vue({
     } else {
       // Initialize an empty array if no logs are found in localStorage
       this.hooks = [];
+    }
+
+    if (storedTimestamps) {
+      // Parse and set the timestamps if there are stored timestamps in localStorage
+      // This is where we retrieve the formatted timestamps
+      this.timestamps = JSON.parse(storedTimestamps);
+    } else {
+      // Initialize an empty array if no timestamps are found in localStorage
+      this.timestamps = [];
     }
 
     // Immediately filter the logs based on the searchTerm
     this.filterHooks();
   },
   created() {
-    // Initialize the logs array by retrieving data from localStorage
-    const storedLogs = localStorage.getItem('logs');
-
-    if (storedLogs) {
-      // Parse and set the logs if there are stored logs in localStorage
-      this.hooks = JSON.parse(storedLogs);
-    } else {
-      // Initialize an empty array if no logs are found in localStorage
-      this.hooks = [];
-    }
-    
-    // options to format timestamp
-    let options = {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: false
-    };
-    
     // Connect to the Socket.io server and listen for incoming hooks
     socket.on('webhook', (hook) => {
-      // Retrieve the last assigned ID from localStorage or start at 0
-      let lastHookId = parseInt(localStorage.getItem('lastHookId')) || 0;
+      // Generate a unique ID for the event based on the current length of the hooks array
+      const generatedHookId = this.hooks.length;
 
-      // Add an ID and timestamp to the hook
-      hook.id = ++lastHookId;
+      // Store the event in the hooks array without modifying the original event JSON
+      this.hooks.push({ ...hook });
 
-      // Add formated timestamp
-      hook.timestamp = new Intl.DateTimeFormat('it-IT', options).format(new Date()).replace(", ", "T").replaceAll("/", "-");
+      // Get the timestamp for the hook
+      const timestamp = Date.now();
 
-      // Handle incoming hooks
-      this.hooks.push(hook);
+      // Format the timestamp and store it in the separate timestamps array
+      const formattedTimestamp = this.formatTimestamp(timestamp);
+      this.timestamps.push({ id: generatedHookId, timestamp: formattedTimestamp });
 
       // Update filtered hooks when new data arrives
       this.filterHooks();
 
-      // Save the updated logs to localStorage
+      // Save the updated logs and timestamps to localStorage
       localStorage.setItem('logs', JSON.stringify(this.hooks));
-      localStorage.setItem('lastHookId', lastHookId);
-
+      localStorage.setItem('lastHookId', generatedHookId); // Store the generatedHookId in local storage
+      localStorage.setItem('timestamps', JSON.stringify(this.timestamps));
     });
+
+    // Retrieve the last assigned ID from localStorage or start at 0
+    this.lastHookId = parseInt(localStorage.getItem('lastHookId')) || 0;
   }
+
 });

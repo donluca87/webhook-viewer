@@ -19,11 +19,11 @@
                 <button @click="clearLocalStorage" class="button">Clear Local Storage</button>
             </div>
             <ul class="logs-list">
-                <li v-for="hook in filteredHooks" :key="hook.id" class="log-item">
-                    ID: {{ hook.id }} - Received at: {{ hook.timestamp }} <br />
+                <li v-for="(hook, index) in filteredHooks" :key="index" class="log-item">
+                    ID: {{ index }} - Received at: {{ getFormattedTimestamp(index) }} <br />
                     <code>Login value: {{ hook.login }} - Password value: {{ hook.password }}</code>
                     <pre class="hook-item">{{ JSON.stringify(hook, null, 2) }}</pre>
-                </li>
+                </li>                
             </ul>
         </div>
     </div>
