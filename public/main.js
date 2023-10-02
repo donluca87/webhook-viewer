@@ -27,15 +27,15 @@ new Vue({
       this.searchTerm = ''; // Clear the search term
       this.filteredHooks = this.hooks; // Show all logs
     },
-    // Method to clear localStorage
     clearLocalStorage() {
       localStorage.removeItem('logs'); // Remove logs
       localStorage.removeItem('lastHookId'); // Remove lastHookId
       localStorage.removeItem('timestamps'); // Remove timestamps
       this.hooks = []; // Clear the logs array in your component
+      this.timestamps = []; // Clear the timestamps array in your component
       this.lastHookId = 0; // Reset the lastHookId
       this.filterHooks();
-    },
+    },    
     formatTimestamp(timestamp) {
       // Format the timestamp as needed
       let options = {
