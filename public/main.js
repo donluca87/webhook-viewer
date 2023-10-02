@@ -52,14 +52,14 @@ new Vue({
     },
     getGeneratedHookId(hook) {
       return this.hooks.indexOf(hook);
-  },
-  getFormattedTimestamp(index) {
-    const timestampObj = this.timestamps.find((timestamp) => timestamp.id === index);
-    if (timestampObj) {
+    },
+    getFormattedTimestamp(index) {
+      const timestampObj = this.timestamps.find((timestamp) => timestamp.id === index);
+      if (timestampObj) {
         return timestampObj.timestamp;
-    }
-    return ''; // Handle the case when timestamp is not found
-},
+      }
+      return ''; // Handle the case when timestamp is not found
+    },
   },
   beforeMount() {
     // Initialize the logs array by retrieving data from localStorage
@@ -91,28 +91,28 @@ new Vue({
     socket.on('webhook', (hook) => {
       // Generate a unique ID for the event based on the current length of the hooks array
       const generatedHookId = this.hooks.length;
-  
+
       // Store the event in the hooks array without modifying the original event JSON
       this.hooks.push({ ...hook });
-  
+
       // Get the timestamp for the hook
       const timestamp = Date.now();
-  
+
       // Format the timestamp and store it in the separate timestamps array
       const formattedTimestamp = this.formatTimestamp(timestamp);
       this.timestamps.push({ id: generatedHookId, timestamp: formattedTimestamp });
-  
+
       // Update filtered hooks when new data arrives
       this.filterHooks();
-  
+
       // Save the updated logs and timestamps to localStorage
       localStorage.setItem('logs', JSON.stringify(this.hooks));
       localStorage.setItem('lastHookId', generatedHookId); // Store the generatedHookId in local storage
       localStorage.setItem('timestamps', JSON.stringify(this.timestamps));
     });
-  
+
     // Retrieve the last assigned ID from localStorage or start at 0
     this.lastHookId = parseInt(localStorage.getItem('lastHookId')) || 0;
   }
-  
+
 });
