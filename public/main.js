@@ -6,7 +6,8 @@ new Vue({
   data: {
     hooks: [], // Store received hooks here
     searchTerm: '',
-    filteredHooks: [], // Store filtered hooks here
+    filteredHooks: [], // Store filtered hooks here,
+    lastHookId: null
   },
   methods: {
     filterHooks() {
@@ -111,7 +112,7 @@ new Vue({
     });
   
     // Retrieve the last assigned ID from localStorage or start at 0
-    let lastHookId = parseInt(localStorage.getItem('lastHookId')) || 0;
+    this.lastHookId = parseInt(localStorage.getItem('lastHookId')) || 0;
   }
   
 });
