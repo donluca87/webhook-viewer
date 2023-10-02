@@ -1,14 +1,11 @@
 <!-- public/index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Webhook Viewer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div id="app">
         <div class="container">
@@ -23,17 +20,17 @@
                 <li v-for="index in filteredHookIndices" :key="index" class="log-item">
                     ID: {{ index }} - Received: {{ getFormattedTimestamp(index) }} <br />
                     <code>Example print of json contents | Login value: {{ hooks[index].login }} - Password value: {{ hooks[index].password }}</code>
-                    <div class="hook-title">
-                        <span>Event JSON:</span>
+                    <button type="button" class="collapsible">Show event JSON</button>
+                    <div class="content">
+                        <pre class="hook-item">{{ JSON.stringify(hooks[index], null, 2) }}</pre>
                     </div>
-                    <pre class="hook-item">{{ JSON.stringify(hooks[index], null, 2) }}</pre>
                 </li>
             </ul>
         </div>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/main.js"></script>
+    <script src="/scripts.js"></script>
 </body>
-
 </html>
