@@ -175,24 +175,10 @@ new Vue({
     // Initialize the logs array by retrieving data from localStorage
     const storedLogs = localStorage.getItem('logs');
     const storedTimestamps = localStorage.getItem('timestamps');
-
-    if (storedLogs) {
-      // Parse and set the logs if there are stored logs in localStorage
-      this.hooks = JSON.parse(storedLogs);
-    } else {
-      // Initialize an empty array if no logs are found in localStorage
-      this.hooks = [];
-    }
-
-    if (storedTimestamps) {
-      // Parse and set the timestamps if there are stored timestamps in localStorage
-      // This is where we retrieve the formatted timestamps
-      this.timestamps = JSON.parse(storedTimestamps);
-    } else {
-      // Initialize an empty array if no timestamps are found in localStorage
-      this.timestamps = [];
-    }
-
+    // Parse and set the logs if there are stored logs in localStorage, or initialize an empty array if none found
+    this.hooks = storedLogs ? JSON.parse(storedLogs) : [];
+    // Parse and set the timestamps if there are stored timestamps in localStorage, or initialize an empty array if none found
+    this.timestamps = storedTimestamps ? JSON.parse(storedTimestamps) : [];
     // Immediately filter the logs based on the searchTerm
     this.filterHooks();
   },
@@ -201,20 +187,15 @@ new Vue({
     socket.on('webhook', (hook) => {
       // Generate a unique ID for the event based on the current length of the hooks array
       const generatedHookId = this.hooks.length;
-
       // Store the event in the hooks array without modifying the original event JSON
       this.hooks.push({ ...hook });
-
       // Get the timestamp for the hook
       const timestamp = Date.now();
-
       // Format the timestamp and store it in the separate timestamps array
       const formattedTimestamp = this.formatTimestamp(timestamp);
       this.timestamps.push({ id: generatedHookId, timestamp: formattedTimestamp });
-
       // Update filtered hooks when new data arrives
       this.filterHooks();
-
       // Save the updated logs and timestamps to localStorage
       localStorage.setItem('logs', JSON.stringify(this.hooks));
       localStorage.setItem('lastHookId', generatedHookId); // Store the generatedHookId in local storage
