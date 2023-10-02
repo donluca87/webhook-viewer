@@ -43,7 +43,7 @@ new Vue({
     filterHooks() {
       // Calculate the number of pages before the filter
       const totalPagesBeforeFilter = Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
-    
+
       // Filter hooks based on searchTerm and store the filtered indices
       this.filteredHookIndices = this.hooks
         .map((hook, index) => ({ hook, index }))
@@ -57,19 +57,19 @@ new Vue({
           return false;
         })
         .map(({ index }) => index);
-    
+
       // Calculate the number of pages after the filter
       const totalPagesAfterFilter = Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
-    
+
       // Adjust the current page if necessary to stay within the available pages
       this.currentPage = Math.min(this.currentPage, totalPagesAfterFilter);
-    
+
       // Reset the current page to 1 when searching if there are no filtered results
       if (totalPagesAfterFilter === 0) {
         this.currentPage = 1;
       }
     },
-    
+
     clearSearch() {
       this.searchTerm = ''; // Clear the search term
       // Reset the filteredHookIndices to include all indices
