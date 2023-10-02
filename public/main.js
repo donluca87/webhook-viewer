@@ -17,9 +17,7 @@ new Vue({
         // Check if searchTerm is present as a substring in any property of the webhook data
         for (const key in hook) {
           const value = hook[key];
-          if (value && typeof value === 'string' && value.toLowerCase().includes(searchTerm)) {
-            return true;
-          }
+          return value && typeof value === 'string' && value.toLowerCase().includes(searchTerm);
         }
         return false;
       });
