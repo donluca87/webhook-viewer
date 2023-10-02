@@ -9,6 +9,8 @@ Webhook Logger is a web application that listens for incoming webhook events and
 - Clear button to reset the search and view all events.
 - Persistent storage using local storage to keep logs between sessions.
 - Modern and responsive user interface.
+- Pagination of 10 events shown per page
+- Event JSON collapser/expander
 
 ## Getting Started
 
@@ -33,5 +35,12 @@ To get started with the Webhook Logger, follow these steps:
 
    ```bash
    curl -X POST http://localhost:3000/webhook -H 'Content-Type: application/json' -d '{"login":"test_user","password":"test_password"}'
+
+5. You can use the bash script provided in the /scripts folder to loop the CURL request (default iterations = 20)
+
+   ```bash
+   chmod +x scripts/curl_looper.sh && ./scripts/curl_looper.sh
+
+
 
 
