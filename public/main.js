@@ -65,29 +65,34 @@ new Vue({
   methods: {
     filterHooks() {
       // Filter hooks based on searchTerm and store the filtered indices
-      this.filteredHookIndices = this.hooks
-        .map((hook, index) => ({ hook, index }))
-        .filter(({ hook }) => {
-          const searchTerm = this.searchTerm.toLowerCase();
-          // Check if searchTerm is present as a substring in any property of the webhook data
-          for (const key in hook) {
-            const value = hook[key];
-            return value && typeof value === 'string' && value.toLowerCase().includes(searchTerm);
-          }
-          return false;
-        })
-        .map(({ index }) => index);
-
+      this.filteredHookIndices = this.filterHooksBySearchTerm();
       // Calculate the number of pages after the filter
-      const totalPagesAfterFilter = Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
-
+      const totalPagesAfterFilter = this.calculateTotalPagesAfterFilter();
       // Adjust the current page if necessary to stay within the available pages
       this.currentPage = Math.min(this.currentPage, totalPagesAfterFilter);
-
       // Reset the current page to 1 when searching if there are no filtered results
       if (totalPagesAfterFilter === 0) {
         this.currentPage = 1;
       }
+    },
+    filterHooksBySearchTerm() {
+      const searchTerm = this.searchTerm.toLowerCase();
+      return this.hooks
+        .map((hook, index) => ({ hook, index }))
+        .filter(({ hook }) => this.hookContainsSearchTerm(hook, searchTerm))
+        .map(({ index }) => index);
+    },
+    hookContainsSearchTerm(hook, searchTerm) {
+      for (const key in hook) {
+        const value = hook[key];
+        if (value && typeof value === 'string' && value.toLowerCase().includes(searchTerm)) {
+          return true;
+        }
+      }
+      return false;
+    },
+    calculateTotalPagesAfterFilter() {
+      return Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
     },
     clearSearch() {
       this.searchTerm = ''; // Clear the search term
@@ -170,24 +175,10 @@ new Vue({
     // Initialize the logs array by retrieving data from localStorage
     const storedLogs = localStorage.getItem('logs');
     const storedTimestamps = localStorage.getItem('timestamps');
-
-    if (storedLogs) {
-      // Parse and set the logs if there are stored logs in localStorage
-      this.hooks = JSON.parse(storedLogs);
-    } else {
-      // Initialize an empty array if no logs are found in localStorage
-      this.hooks = [];
-    }
-
-    if (storedTimestamps) {
-      // Parse and set the timestamps if there are stored timestamps in localStorage
-      // This is where we retrieve the formatted timestamps
-      this.timestamps = JSON.parse(storedTimestamps);
-    } else {
-      // Initialize an empty array if no timestamps are found in localStorage
-      this.timestamps = [];
-    }
-
+    // Parse and set the logs if there are stored logs in localStorage, or initialize an empty array if none found
+    this.hooks = storedLogs ? JSON.parse(storedLogs) : [];
+    // Parse and set the timestamps if there are stored timestamps in localStorage, or initialize an empty array if none found
+    this.timestamps = storedTimestamps ? JSON.parse(storedTimestamps) : [];
     // Immediately filter the logs based on the searchTerm
     this.filterHooks();
   },
@@ -196,20 +187,15 @@ new Vue({
     socket.on('webhook', (hook) => {
       // Generate a unique ID for the event based on the current length of the hooks array
       const generatedHookId = this.hooks.length;
-
       // Store the event in the hooks array without modifying the original event JSON
       this.hooks.push({ ...hook });
-
       // Get the timestamp for the hook
       const timestamp = Date.now();
-
       // Format the timestamp and store it in the separate timestamps array
       const formattedTimestamp = this.formatTimestamp(timestamp);
       this.timestamps.push({ id: generatedHookId, timestamp: formattedTimestamp });
-
       // Update filtered hooks when new data arrives
       this.filterHooks();
-
       // Save the updated logs and timestamps to localStorage
       localStorage.setItem('logs', JSON.stringify(this.hooks));
       localStorage.setItem('lastHookId', generatedHookId); // Store the generatedHookId in local storage
