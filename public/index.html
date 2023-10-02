@@ -21,8 +21,11 @@
             </div>
             <ul class="logs-list">
                 <li v-for="index in filteredHookIndices" :key="index" class="log-item">
-                    ID: {{ index }} - Received at: {{ getFormattedTimestamp(index) }} <br />
-                    <code>Login value: {{ hooks[index].login }} - Password value: {{ hooks[index].password }}</code>
+                    ID: {{ index }} - Received: {{ getFormattedTimestamp(index) }} <br />
+                    <code>Example print of json contents | Login value: {{ hooks[index].login }} - Password value: {{ hooks[index].password }}</code>
+                    <div class="hook-title">
+                        <span>Event JSON:</span>
+                    </div>
                     <pre class="hook-item">{{ JSON.stringify(hooks[index], null, 2) }}</pre>
                 </li>
             </ul>

@@ -1,73 +1,91 @@
 /* styles.css */
 
 /* Reset some default browser styles */
-body, h1, h2, ul, li {
-    margin: 10;
-    padding: 10;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #555555;
-    line-height: 1.6;
-  }
-  
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #75c7fd;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .search-box {
-    display: flex;
-    margin-bottom: 20px;
-  }
-  
-  .search-input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-  
-  .button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    padding: 10px 20px;
-    margin-left: 10px;
-    cursor: pointer;
-  }
-  
-  .logs-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column; /* Display items vertically */
-    flex-grow: 1; /* Grow and use all available vertical space */
-    overflow-y: auto; /* Add vertical scrollbar if necessary */
-    padding: 0; /* Remove default padding */
-  }
-  
-  .log-item {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 3px;
-  }
+html {
+  min-width: 540px;
+}
 
-  .hook-item {
-    background-color: black;
-    color: limegreen;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 3px;
-    white-space: pre-wrap; /* Preserve line breaks and spaces in JSON */
-    font-family: monospace; /* Use a monospace font for JSON formatting */
-  }
-  
+body,
+h1,
+h2,
+ul,
+li {
+  margin: 10;
+  padding: 10;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #555555;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #75c7fd;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.search-box {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 10px 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.logs-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  /* Display items vertically */
+  flex-grow: 1;
+  /* Grow and use all available vertical space */
+  overflow-y: auto;
+  /* Add vertical scrollbar if necessary */
+  padding: 0;
+  /* Remove default padding */
+}
+
+.log-item {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+}
+
+.hook-item {
+  background-color: black;
+  color: limegreen;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  white-space: pre-wrap;
+  /* Preserve line breaks and spaces in JSON */
+  font-family: monospace;
+  /* Use a monospace font for JSON formatting */
+}
+
+.hook-title {
+  display: flex;
+  margin-bottom: -10px;
+}
