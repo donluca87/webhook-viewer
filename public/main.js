@@ -1,6 +1,27 @@
 // public/main.js
 const socket = io();
 
+// Function to save an event to localStorage with data size management
+function saveEventToLocalStorage(event) {
+  const events = JSON.parse(localStorage.getItem('events')) || [];
+  events.push(event);
+
+  // Check if the data size exceeds a limit (e.g., 1 MB)
+  if (calculateDataSize(events) > 1000000) {
+    // Implement a cleanup strategy (e.g., remove the oldest events)
+    const numberOfEventsToRemove = Math.ceil(events.length / 2);
+    events.splice(0, numberOfEventsToRemove);
+  }
+
+  localStorage.setItem('events', JSON.stringify(events));
+}
+
+// Function to calculate the size of data in bytes
+function calculateDataSize(data) {
+  // Calculate the size of data in bytes (this is a simplified example)
+  return new TextEncoder().encode(JSON.stringify(data)).length;
+}
+
 // Register the collapsible-item component globally
 Vue.component('collapsible-item', {
   props: {
@@ -29,30 +50,23 @@ Vue.component('collapsible-item', {
   `,
 });
 
-
-
-
-
-
-
 new Vue({
   el: '#app',
   data: {
     hooks: [], // Store received hooks here
     searchTerm: '',
-    filteredHooks: [], // Store filtered hooks here,
     lastHookId: null,
     filteredHookIndices: [], // Store filtered hook indices here
-    hooks: [], // Ensure that the hooks data is defined in your Vue instance's data
+    eventsPerPage: 10, // Number of events to show per page
+    currentPage: 1,   // Current page number
+    currentPageIndicator: 1, // Add a new property for the page indicator
+    eventsPerPage: 10,
   },
   methods: {
     filterHooks() {
       // Filter hooks based on searchTerm and store the filtered indices
       this.filteredHookIndices = this.hooks
-        .map((hook, index) => ({
-          hook,
-          index,
-        }))
+        .map((hook, index) => ({ hook, index }))
         .filter(({ hook }) => {
           const searchTerm = this.searchTerm.toLowerCase();
           // Check if searchTerm is present as a substring in any property of the webhook data
@@ -63,6 +77,17 @@ new Vue({
           return false;
         })
         .map(({ index }) => index);
+
+      // Calculate the number of pages after the filter
+      const totalPagesAfterFilter = Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
+
+      // Adjust the current page if necessary to stay within the available pages
+      this.currentPage = Math.min(this.currentPage, totalPagesAfterFilter);
+
+      // Reset the current page to 1 when searching if there are no filtered results
+      if (totalPagesAfterFilter === 0) {
+        this.currentPage = 1;
+      }
     },
     clearSearch() {
       this.searchTerm = ''; // Clear the search term
@@ -89,7 +114,6 @@ new Vue({
         second: "numeric",
         hour12: false
       };
-
       return new Intl.DateTimeFormat('it-IT', options).format(new Date(timestamp));
     },
     getGeneratedHookId(hook) {
@@ -105,7 +129,42 @@ new Vue({
     toggleCollapsible() {
       this.isActive = !this.isActive;
       console.log('isActive:', this.isActive); // Debugging line
-    }
+    },
+    nextPage() {
+      if (this.hasNextPage) {
+        this.currentPage++;
+      }
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    // Method to set the current page and page indicator
+    setCurrentPage(pageNumber) {
+      if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+        this.currentPage = pageNumber;
+      }
+    },
+  },
+  watch: {
+    currentPage(newPage) {
+      // Update the currentPageIndicator when currentPage changes
+      this.currentPageIndicator = newPage;
+    },
+  },
+  computed: {
+    totalPages() {
+      return Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
+    },
+    hasNextPage() {
+      return this.currentPage < this.totalPages;
+    },
+    paginatedHooks() {
+      const startIndex = (this.currentPage - 1) * this.eventsPerPage;
+      const endIndex = startIndex + this.eventsPerPage;
+      return this.filteredHookIndices.slice(startIndex, endIndex);
+    },
   },
   beforeMount() {
     // Initialize the logs array by retrieving data from localStorage
@@ -156,9 +215,7 @@ new Vue({
       localStorage.setItem('lastHookId', generatedHookId); // Store the generatedHookId in local storage
       localStorage.setItem('timestamps', JSON.stringify(this.timestamps));
     });
-
     // Retrieve the last assigned ID from localStorage or start at 0
     this.lastHookId = parseInt(localStorage.getItem('lastHookId')) || 0;
   }
-
 });

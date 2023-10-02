@@ -18,11 +18,19 @@
                 <button @click="clearSearch" class="button">Clear Search</button>
                 <button @click="clearLocalStorage" class="button">Clear Local Storage</button>
             </div>
+            <!-- Add these elements in your template for the page indicator and input -->
+            <div class="pagination">
+                <button @click="prevPage" :disabled="currentPage === 1">Previous Page</button>
+                <span>Page {{ currentPageIndicator }} of {{ totalPages }}</span>
+                <input type="number" v-model.number="currentPageIndicator" @input="setCurrentPage(currentPageIndicator)"
+                    :min="1" :max="totalPages" />
+                <button @click="nextPage" :disabled="!hasNextPage">Next Page</button>
+            </div>
             <ul class="logs-list">
                 <!-- Pass the hook data to the collapsible-item component -->
-                <li v-for="index in filteredHookIndices" :key="index" class="log-item">
+                <li v-for="index in paginatedHooks" :key="index" class="log-item">
                     ID: {{ index }} - Received: {{ getFormattedTimestamp(index) }} <br />
-                    <code>Example print of json contents | Login value: {{ hooks[index].login }} - Password value: {{ hooks[index].password }}</code>
+                    <code>Login value: {{ hooks[index].login }} - Password value: {{ hooks[index].password }}</code>
                     <collapsible-item :hook="hooks[index]"></collapsible-item>
                 </li>
             </ul>
