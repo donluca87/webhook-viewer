@@ -1,5 +1,4 @@
 <!-- public/index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,19 +19,17 @@
                 <button @click="clearLocalStorage" class="button">Clear Local Storage</button>
             </div>
             <ul class="logs-list">
+                <!-- Pass the hook data to the collapsible-item component -->
                 <li v-for="index in filteredHookIndices" :key="index" class="log-item">
                     ID: {{ index }} - Received: {{ getFormattedTimestamp(index) }} <br />
                     <code>Example print of json contents | Login value: {{ hooks[index].login }} - Password value: {{ hooks[index].password }}</code>
-                    <div class="hook-title">
-                        <span>Event JSON:</span>
-                    </div>
-                    <pre class="hook-item">{{ JSON.stringify(hooks[index], null, 2) }}</pre>
+                    <collapsible-item :hook="hooks[index]"></collapsible-item>
                 </li>
             </ul>
         </div>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/main.js"></script>
 </body>
 
