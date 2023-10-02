@@ -40,10 +40,8 @@ new Vue({
   data: {
     hooks: [], // Store received hooks here
     searchTerm: '',
-    filteredHooks: [], // Store filtered hooks here,
     lastHookId: null,
     filteredHookIndices: [], // Store filtered hook indices here
-    hooks: [], // Ensure that the hooks data is defined in your Vue instance's data
   },
   methods: {
     filterHooks() {
