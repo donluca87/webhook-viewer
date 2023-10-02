@@ -29,12 +29,6 @@ Vue.component('collapsible-item', {
   `,
 });
 
-
-
-
-
-
-
 new Vue({
   el: '#app',
   data: {
@@ -42,15 +36,17 @@ new Vue({
     searchTerm: '',
     lastHookId: null,
     filteredHookIndices: [], // Store filtered hook indices here
+    eventsPerPage: 10, // Number of events to show per page
+    currentPage: 1,   // Current page number
   },
   methods: {
     filterHooks() {
+      // Calculate the number of pages before the filter
+      const totalPagesBeforeFilter = Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
+    
       // Filter hooks based on searchTerm and store the filtered indices
       this.filteredHookIndices = this.hooks
-        .map((hook, index) => ({
-          hook,
-          index,
-        }))
+        .map((hook, index) => ({ hook, index }))
         .filter(({ hook }) => {
           const searchTerm = this.searchTerm.toLowerCase();
           // Check if searchTerm is present as a substring in any property of the webhook data
@@ -61,7 +57,19 @@ new Vue({
           return false;
         })
         .map(({ index }) => index);
+    
+      // Calculate the number of pages after the filter
+      const totalPagesAfterFilter = Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
+    
+      // Adjust the current page if necessary to stay within the available pages
+      this.currentPage = Math.min(this.currentPage, totalPagesAfterFilter);
+    
+      // Reset the current page to 1 when searching if there are no filtered results
+      if (totalPagesAfterFilter === 0) {
+        this.currentPage = 1;
+      }
     },
+    
     clearSearch() {
       this.searchTerm = ''; // Clear the search term
       // Reset the filteredHookIndices to include all indices
@@ -103,7 +111,30 @@ new Vue({
     toggleCollapsible() {
       this.isActive = !this.isActive;
       console.log('isActive:', this.isActive); // Debugging line
-    }
+    },
+    nextPage() {
+      if (this.hasNextPage) {
+        this.currentPage++;
+      }
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+  },
+  computed: {
+    paginatedHooks() {
+      const startIndex = (this.currentPage - 1) * this.eventsPerPage;
+      const endIndex = startIndex + this.eventsPerPage;
+      return this.filteredHookIndices.slice(startIndex, endIndex);
+    },
+    // Computed property to check if there's a next page
+    hasNextPage() {
+      return (
+        this.currentPage < Math.ceil(this.filteredHookIndices.length / this.eventsPerPage)
+      );
+    },
   },
   beforeMount() {
     // Initialize the logs array by retrieving data from localStorage
