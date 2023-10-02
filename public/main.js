@@ -7,25 +7,32 @@ new Vue({
     hooks: [], // Store received hooks here
     searchTerm: '',
     filteredHooks: [], // Store filtered hooks here,
-    lastHookId: null
+    lastHookId: null,
+    filteredHookIndices: [], // Store filtered hook indices here
   },
   methods: {
     filterHooks() {
-      // Filter hooks based on searchTerm
-      this.filteredHooks = this.hooks.filter((hook) => {
-        const searchTerm = this.searchTerm.toLowerCase();
-
-        // Check if searchTerm is present as a substring in any property of the webhook data
-        for (const key in hook) {
-          const value = hook[key];
-          return value && typeof value === 'string' && value.toLowerCase().includes(searchTerm);
-        }
-        return false;
-      });
+      // Filter hooks based on searchTerm and store the filtered indices
+      this.filteredHookIndices = this.hooks
+        .map((hook, index) => ({
+          hook,
+          index,
+        }))
+        .filter(({ hook }) => {
+          const searchTerm = this.searchTerm.toLowerCase();
+          // Check if searchTerm is present as a substring in any property of the webhook data
+          for (const key in hook) {
+            const value = hook[key];
+            return value && typeof value === 'string' && value.toLowerCase().includes(searchTerm);
+          }
+          return false;
+        })
+        .map(({ index }) => index);
     },
     clearSearch() {
       this.searchTerm = ''; // Clear the search term
-      this.filteredHooks = this.hooks; // Show all logs
+      // Reset the filteredHookIndices to include all indices
+      this.filteredHookIndices = this.hooks.map((_, index) => index);
     },
     clearLocalStorage() {
       localStorage.removeItem('logs'); // Remove logs
@@ -35,7 +42,7 @@ new Vue({
       this.timestamps = []; // Clear the timestamps array in your component
       this.lastHookId = 0; // Reset the lastHookId
       this.filterHooks();
-    },    
+    },
     formatTimestamp(timestamp) {
       // Format the timestamp as needed
       let options = {
