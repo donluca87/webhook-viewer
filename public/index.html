@@ -18,7 +18,6 @@
                 <button @click="clearSearch" class="button">Clear Search</button>
                 <button @click="clearLocalStorage" class="button">Clear Local Storage</button>
             </div>
-
             <!-- Add these elements in your template for the page indicator and input -->
             <div class="pagination">
                 <button @click="prevPage" :disabled="currentPage === 1">Previous Page</button>
@@ -26,14 +25,7 @@
                 <input type="number" v-model.number="currentPageIndicator" @input="setCurrentPage(currentPageIndicator)"
                     :min="1" :max="totalPages" />
                 <button @click="nextPage" :disabled="!hasNextPage">Next Page</button>
-
-                <div class="events-per-page">
-                    <label for="eventsPerPageInput">Events Per Page:</label>
-                    <input id="eventsPerPageInput" type="number" v-model="eventsPerPage" min="1" max="100" />
-                </div>
-
             </div>
-
             <ul class="logs-list">
                 <!-- Pass the hook data to the collapsible-item component -->
                 <li v-for="index in paginatedHooks" :key="index" class="log-item">

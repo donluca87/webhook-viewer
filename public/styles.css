@@ -1,6 +1,6 @@
 /* styles.css */
 html {
-  min-width: 768px;
+  min-width: 540px;
 }
 
 body,
@@ -107,15 +107,4 @@ body {
   display: none;
   overflow: hidden;
   background-color: #f1f1f1;
-}
-
-.events-per-page {
-  display: flex;
-  float: right;
-  /* Adjust margin as needed */
-}
-
-.events-per-page label {
-  margin-right: 5px;
-  /* Adjust margin as needed */
 }
