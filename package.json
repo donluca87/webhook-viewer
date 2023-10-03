@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node webhook-server.js"
+    "start-server": "node webhook-server.js"
     "lint": "eslint --ext .ts,.tsx ./src",
     "fix": "npm format && npm lint:fix",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
