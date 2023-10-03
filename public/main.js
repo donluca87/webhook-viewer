@@ -83,13 +83,9 @@ new Vue({
         .map(({ index }) => index);
     },
     hookContainsSearchTerm(hook, searchTerm) {
-      for (const key in hook) {
-        const value = hook[key];
-        if (value && typeof value === 'string' && value.toLowerCase().includes(searchTerm)) {
-          return true;
-        }
-      }
-      return false;
+      return Object.values(hook).some((value) =>
+        value && typeof value === 'string' && value.toLowerCase().includes(searchTerm)
+      )
     },
     calculateTotalPagesAfterFilter() {
       return Math.ceil(this.filteredHookIndices.length / this.eventsPerPage);
