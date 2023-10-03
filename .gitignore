@@ -3,12 +3,3 @@ node_modules/
 
 # Ignore package-lock.json file
 package-lock.json
-
-# Ignore any log files
-*.log
-
-# Ignore compiled JavaScript files (if any)
-*.js
-
-# Ignore compiled CSS files (if any)
-*.css
