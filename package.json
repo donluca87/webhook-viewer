@@ -5,6 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node webhook-server.js"
+    "lint": "eslint --ext .ts,.tsx ./src",
+    "fix": "npm format && npm lint:fix",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
+    "fix:eslint": "eslint src --ext .js,.ts,.jsx,.tsx --fix",
+    "fix:prettier": "prettier --write ."
   },
   "keywords": [],
   "author": "",
