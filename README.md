@@ -40,7 +40,3 @@ To get started with the Webhook Logger, follow these steps:
 
    ```bash
    chmod +x scripts/curl_looper.sh && ./scripts/curl_looper.sh
-
-
-
-
