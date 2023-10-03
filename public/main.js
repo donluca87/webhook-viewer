@@ -60,7 +60,6 @@ new Vue({
     eventsPerPage: 10, // Number of events to show per page
     currentPage: 1,   // Current page number
     currentPageIndicator: 1, // Add a new property for the page indicator
-    eventsPerPage: 10,
   },
   methods: {
     filterHooks() {
